@@ -9687,6 +9687,17 @@ static void VULKAN_DrawPrimitives(
 	renderer->drawCallMadeThisPass = 1;
 }
 
+static void VULKAN_Dispatch(
+	FNA3D_Renderer* driverData,
+	int32_t threadGroupCountX,
+	int32_t threadGroupCountY,
+	int32_t threadGroupCountZ
+) {
+	VulkanRenderer* renderer = (VulkanRenderer*)driverData;
+	// TODO: Add Vulkan and new effect framework logic
+}
+
+
 /* Mutable Render States */
 
 static void VULKAN_SetViewport(
@@ -11211,6 +11222,26 @@ static FNA3D_Buffer* VULKAN_GenVertexBuffer(
 	);
 }
 
+static FNA3D_ComputeBuffer* VULKAN_GenComputeBuffer(
+	FNA3D_Renderer* driverData,
+	uint8_t dynamic,
+	FNA3D_ComputeBufferType type,
+	FNA3D_BufferUsage usage,
+	int32_t elementCount,
+	int32_t strideSize
+) {
+	VulkanRenderer* renderer = (VulkanRenderer*)driverData;
+	// TODO: Add Vulkan and new effect framework logic
+	return NULL;
+}
+
+static void VULKAN_AddDisposeComputeBuffer(
+	FNA3D_Renderer* driverData,
+	FNA3D_ComputeBuffer* buffer
+) {
+	// TODO: Add Vulkan and new effect framework logic
+}
+
 static void VULKAN_INTERNAL_DestroyBufferContainer(
 	VulkanRenderer *renderer,
 	VulkanBufferContainer *bufferContainer
@@ -11631,6 +11662,16 @@ static void VULKAN_ApplyEffect(
 	renderer->currentPass = pass;
 
 	SDL_UnlockMutex(renderer->passLock);
+}
+
+static void VULKAN_CreateNewEffect(
+	FNA3D_Renderer* driverData,
+	uint8_t* effectBinaryCode,
+	uint32_t effectCodeLength,
+	FNA3D_Effect_New** effect
+) {
+	VulkanRenderer* renderer = (VulkanRenderer*)driverData;
+	// TODO: Add Vulkan and new effect framework logic
 }
 
 static void VULKAN_BeginPassRestore(

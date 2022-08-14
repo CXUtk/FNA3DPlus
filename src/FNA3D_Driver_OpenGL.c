@@ -695,6 +695,7 @@ struct FNA3D_Command
 			int32_t height;
 			int32_t levelCount;
 			uint8_t isRenderTarget;
+			uint8_t isRandomAccess;
 			FNA3D_Texture *retval;
 		} createTexture2D;
 
@@ -705,6 +706,7 @@ struct FNA3D_Command
 			int32_t height;
 			int32_t depth;
 			int32_t levelCount;
+			uint8_t isRandomAccess;
 			FNA3D_Texture *retval;
 		} createTexture3D;
 
@@ -906,7 +908,8 @@ static void FNA3D_ExecuteCommand(
 				cmd->createTexture2D.width,
 				cmd->createTexture2D.height,
 				cmd->createTexture2D.levelCount,
-				cmd->createTexture2D.isRenderTarget
+				cmd->createTexture2D.isRenderTarget,
+				cmd->createTexture2D.isRandomAccess
 			);
 			break;
 		case FNA3D_COMMAND_CREATETEXTURE3D:
@@ -916,7 +919,8 @@ static void FNA3D_ExecuteCommand(
 				cmd->createTexture3D.width,
 				cmd->createTexture3D.height,
 				cmd->createTexture3D.depth,
-				cmd->createTexture3D.levelCount
+				cmd->createTexture3D.levelCount,
+				cmd->createTexture2D.isRandomAccess
 			);
 			break;
 		case FNA3D_COMMAND_CREATETEXTURECUBE:
@@ -1701,6 +1705,17 @@ static void OPENGL_DrawPrimitives(
 		renderer->glDisable(GL_POINT_SPRITE);
 	}
 }
+
+static void OPENGL_Dispatch(
+	FNA3D_Renderer* driverData,
+	int32_t threadGroupCountX,
+	int32_t threadGroupCountY,
+	int32_t threadGroupCountZ
+) {
+	OpenGLRenderer* renderer = (OpenGLRenderer*)driverData;
+	// TODO: Add OpenGL and new effect framework logic
+}
+
 
 /* Mutable Render States */
 
@@ -4529,6 +4544,27 @@ static FNA3D_Buffer* OPENGL_GenVertexBuffer(
 	return (FNA3D_Buffer*) result;
 }
 
+
+static FNA3D_ComputeBuffer* OPENGL_GenComputeBuffer(
+	FNA3D_Renderer* driverData,
+	uint8_t dynamic,
+	FNA3D_ComputeBufferType type,
+	FNA3D_BufferUsage usage,
+	int32_t elementCount,
+	int32_t strideSize
+) {
+	OpenGLRenderer* renderer = (OpenGLRenderer*)driverData;
+	// TODO: Add OpenGL and new effect framework logic
+	return NULL;
+}
+
+static void OPENGL_AddDisposeComputeBuffer(
+	FNA3D_Renderer* driverData,
+	FNA3D_ComputeBuffer* buffer
+) {
+	// TODO: Add OpenGL and new effect framework logic
+}
+
 static void OPENGL_INTERNAL_DestroyVertexBuffer(
 	OpenGLRenderer *renderer,
 	OpenGLBuffer *buffer
@@ -4974,14 +5010,14 @@ static void OPENGL_CreateEffect(
 }
 
 static void OPENGL_CloneEffect(
-	FNA3D_Renderer *driverData,
-	FNA3D_Effect *cloneSource,
-	FNA3D_Effect **effect,
-	MOJOSHADER_effect **effectData
+	FNA3D_Renderer* driverData,
+	FNA3D_Effect* cloneSource,
+	FNA3D_Effect** effect,
+	MOJOSHADER_effect** effectData
 ) {
-	OpenGLRenderer *renderer = (OpenGLRenderer*) driverData;
-	OpenGLEffect *glCloneSource = (OpenGLEffect*) cloneSource;
-	OpenGLEffect *result;
+	OpenGLRenderer* renderer = (OpenGLRenderer*)driverData;
+	OpenGLEffect* glCloneSource = (OpenGLEffect*)cloneSource;
+	OpenGLEffect* result;
 	FNA3D_Command cmd;
 
 	if (renderer->threadID != SDL_ThreadID())
@@ -5002,10 +5038,20 @@ static void OPENGL_CloneEffect(
 		);
 	}
 
-	result = (OpenGLEffect*) SDL_malloc(sizeof(OpenGLEffect));
+	result = (OpenGLEffect*)SDL_malloc(sizeof(OpenGLEffect));
 	result->effect = *effectData;
 	result->next = NULL;
-	*effect = (FNA3D_Effect*) result;
+	*effect = (FNA3D_Effect*)result;
+}
+
+static void OPENGL_CreateNewEffect(
+	FNA3D_Renderer* driverData,
+	uint8_t* effectBinaryCode,
+	uint32_t effectCodeLength,
+	FNA3D_Effect_New** effect
+) {
+	OpenGLRenderer* renderer = (OpenGLRenderer*)driverData;
+	// TODO: Add OpenGL and new effect framework logic
 }
 
 static void OPENGL_INTERNAL_DestroyEffect(
