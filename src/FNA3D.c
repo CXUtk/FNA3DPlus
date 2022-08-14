@@ -327,6 +327,25 @@ void FNA3D_DrawPrimitives(
 	);
 }
 
+void FNA3D_Dispatch(
+	FNA3D_Device* device,
+	int32_t threadGroupCountX,
+	int32_t threadGroupCountY,
+	int32_t threadGroupCountZ
+) {
+	TRACE_DRAWPRIMITIVES
+	if (device == NULL)
+	{
+		return;
+	}
+	device->Dispatch(
+		device->driverData,
+		threadGroupCountX,
+		threadGroupCountY,
+		threadGroupCountZ
+	);
+}
+
 /* Mutable Render States */
 
 void FNA3D_SetViewport(FNA3D_Device *device, FNA3D_Viewport *viewport)
@@ -629,7 +648,8 @@ FNA3D_Texture* FNA3D_CreateTexture2D(
 	int32_t width,
 	int32_t height,
 	int32_t levelCount,
-	uint8_t isRenderTarget
+	uint8_t isRenderTarget,
+	uint8_t isRandomAccess
 ) {
 	/* We're stuck tracing _after_ the call instead of _before_, because
 	 * of threading issues. This can cause timing issues!
@@ -645,7 +665,8 @@ FNA3D_Texture* FNA3D_CreateTexture2D(
 		width,
 		height,
 		levelCount,
-		isRenderTarget
+		isRenderTarget,
+		isRandomAccess
 	);
 	TRACE_CREATETEXTURE2D
 	return result;
@@ -657,7 +678,8 @@ FNA3D_Texture* FNA3D_CreateTexture3D(
 	int32_t width,
 	int32_t height,
 	int32_t depth,
-	int32_t levelCount
+	int32_t levelCount,
+	uint8_t isRandomAccess
 ) {
 	/* We're stuck tracing _after_ the call instead of _before_, because
 	 * of threading issues. This can cause timing issues!
@@ -673,7 +695,8 @@ FNA3D_Texture* FNA3D_CreateTexture3D(
 		width,
 		height,
 		depth,
-		levelCount
+		levelCount,
+		isRandomAccess
 	);
 	TRACE_CREATETEXTURE3D
 	return result;
@@ -1177,6 +1200,97 @@ void FNA3D_GetIndexBufferData(
 	);
 }
 
+
+/* Compute Buffers */
+
+FNA3D_ComputeBuffer* FNA3D_GenComputeBuffer(
+	FNA3D_Device* device,
+	uint8_t dynamic,
+	FNA3D_ComputeBufferType type,
+	FNA3D_BufferUsage usage,
+	int32_t elementCount,
+	int32_t strideSize
+) {
+	/* We're stuck tracing _after_ the call instead of _before_, because
+	 * of threading issues. This can cause timing issues!
+	 */
+	FNA3D_ComputeBuffer* result;
+	if (device == NULL)
+	{
+		return NULL;
+	}
+	result = device->GenComputeBuffer(
+		device->driverData,
+		dynamic,
+		type,
+		usage,
+		elementCount,
+		strideSize
+	);
+
+	// TODO: Fix tracing
+	TRACE_GENVERTEXBUFFER
+	return result;
+}
+
+//FNA3DAPI FNA3D_Buffer* FNA3D_CreateTexture2DUAV(
+//	FNA3D_Device* device, 
+//	FNA3D_SurfaceFormat format, 
+//	int32_t width,
+//	int32_t height, 
+//	int32_t levelCount,
+//	uint8_t isRenderTarget)
+//{
+//	/* We're stuck tracing _after_ the call instead of _before_, because
+//	 * of threading issues.This can cause timing issues!
+//	 */
+//	FNA3D_Texture * result;
+//	if (device == NULL)
+//	{
+//		return NULL;
+//	}
+//	result = device->CreateTexture2DUAV(
+//		device->driverData,
+//		format,
+//		width,
+//		height,
+//		levelCount,
+//		isRenderTarget
+//	);
+//	TRACE_CREATETEXTURE2D
+//	return result;
+//}
+
+FNA3D_Buffer* FNA3D_CompileEffects(
+	FNA3D_Device* device,
+	uint8_t dynamic,
+	FNA3D_ComputeBufferType type,
+	FNA3D_BufferUsage usage,
+	int32_t elementCount,
+	int32_t strideSize
+) {
+	/* We're stuck tracing _after_ the call instead of _before_, because
+	 * of threading issues. This can cause timing issues!
+	 */
+	FNA3D_Buffer* result;
+	if (device == NULL)
+	{
+		return NULL;
+	}
+	result = device->GenComputeBuffer(
+		device->driverData,
+		dynamic,
+		type,
+		usage,
+		elementCount,
+		strideSize
+	);
+
+	// TODO: Fix tracing
+	TRACE_GENVERTEXBUFFER
+		return result;
+}
+
 /* Effects */
 
 void FNA3D_CreateEffect(
@@ -1204,6 +1318,43 @@ void FNA3D_CreateEffect(
 	);
 	TRACE_CREATEEFFECT
 }
+
+
+void FNA3D_CreateNewEffect(
+	FNA3D_Device* device,
+	uint8_t* effectBinaryCode,
+	uint32_t effectCodeLength,
+	FNA3D_Effect_New** effect
+) {
+	/* We're stuck tracing _after_ the call instead of _before_, because
+	 * of threading issues. This can cause timing issues!
+	 */
+	if (device == NULL)
+	{
+		*effect = NULL;
+		return;
+	}
+	device->CreateNewEffect(
+		device->driverData,
+		effectBinaryCode,
+		effectCodeLength,
+		effect
+	);
+	TRACE_CREATEEFFECT
+}
+
+void FNA3D_AddDisposeComputeBuffer(
+	FNA3D_Device* device,
+	FNA3D_ComputeBuffer* buffer
+) {
+	TRACE_ADDDISPOSEINDEXBUFFER
+	if (device == NULL || buffer == NULL)
+	{
+		return;
+	}
+	device->AddDisposeComputeBuffer(device->driverData, buffer);
+}
+
 
 void FNA3D_CloneEffect(
 	FNA3D_Device *device,

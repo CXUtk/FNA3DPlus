@@ -30,6 +30,7 @@
 #ifdef _WIN32
 #define FNA3DAPI __declspec(dllexport)
 #define FNA3DCALL __cdecl
+#define FX11API extern "C" __declspec(dllexport)
 #else
 #define FNA3DAPI
 #define FNA3DCALL
@@ -55,8 +56,11 @@ extern "C" {
 typedef struct FNA3D_Device FNA3D_Device;
 typedef struct FNA3D_Texture FNA3D_Texture;
 typedef struct FNA3D_Buffer FNA3D_Buffer;
+typedef struct FNA3D_ComputeBuffer FNA3D_ComputeBuffer;
+typedef struct FNA3D_ComputeShader FNA3D_ComputeShader;
 typedef struct FNA3D_Renderbuffer FNA3D_Renderbuffer;
 typedef struct FNA3D_Effect FNA3D_Effect;
+typedef struct FNA3D_Effect_New FNA3D_Effect_New;
 typedef struct FNA3D_Query FNA3D_Query;
 
 /* Enumerations, should match XNA 4.0 */
@@ -156,6 +160,14 @@ typedef enum FNA3D_CubeMapFace
 	FNA3D_CUBEMAPFACE_POSITIVEZ,
 	FNA3D_CUBEMAPFACE_NEGATIVEZ
 } FNA3D_CubeMapFace;
+
+typedef enum FNA3D_ComputeBufferType
+{
+	FNA3D_COMPUTEBUFFER_TYPE_DEFAULT = 0,
+	FNA3D_COMPUTEBUFFER_TYPE_RAW = 1,
+	FNA3D_COMPUTEBUFFER_TYPE_APPEND = 2,
+	FNA3D_COMPUTEBUFFER_TYPE_COUNTER = 4
+} FNA3D_ComputeBufferType;
 
 typedef enum FNA3D_BufferUsage
 {
@@ -463,7 +475,7 @@ typedef struct FNA3D_RenderTargetBinding
 
 #define FNA3D_ABI_VERSION	 0
 #define FNA3D_MAJOR_VERSION	22
-#define FNA3D_MINOR_VERSION	 8
+#define FNA3D_MINOR_VERSION	 6
 #define FNA3D_PATCH_VERSION	 0
 
 #define FNA3D_COMPILED_VERSION ( \
@@ -622,6 +634,17 @@ FNA3DAPI void FNA3D_DrawPrimitives(
 	FNA3D_PrimitiveType primitiveType,
 	int32_t vertexStart,
 	int32_t primitiveCount
+);
+
+
+/* Compute */
+/* Dispatch compute task with multiple threads
+ */
+FNA3DAPI void FNA3D_Dispatch(
+	FNA3D_Device* device,
+	int32_t threadGroupCountX,
+	int32_t threadGroupCountY,
+	int32_t threadGroupCountZ
 );
 
 /* Mutable Render States */
@@ -890,7 +913,8 @@ FNA3DAPI FNA3D_Texture* FNA3D_CreateTexture2D(
 	int32_t width,
 	int32_t height,
 	int32_t levelCount,
-	uint8_t isRenderTarget
+	uint8_t isRenderTarget,
+	uint8_t isRandomAccess
 );
 
 /* Creates a 3D texture to be applied to VerifySampler.
@@ -910,7 +934,8 @@ FNA3DAPI FNA3D_Texture* FNA3D_CreateTexture3D(
 	int32_t width,
 	int32_t height,
 	int32_t depth,
-	int32_t levelCount
+	int32_t levelCount,
+	uint8_t isRandomAccess
 );
 
 /* Creates a texture cube to be applied to VerifySampler.
@@ -1318,6 +1343,38 @@ FNA3DAPI void FNA3D_GetIndexBufferData(
 	void* data,
 	int32_t dataLength
 );
+
+/* Compute Buffer */
+/* Creates a compute buffer to be used by compute shaders
+ *
+ * dynamic:		Set to 1 if this buffer will be updated frequently.
+ * usage:		Set to WRITEONLY if you do not intend to call GetData.
+ * sizeInBytes:		The length of the vertex buffer.
+ *
+ * Returns an allocated FNA3D_Buffer* object. Note that the contents of the
+ * buffer are undefined, so you must call SetData at least once before drawing!
+ */
+FNA3DAPI FNA3D_ComputeBuffer* FNA3D_GenComputeBuffer(
+	FNA3D_Device* device,
+	uint8_t dynamic,
+	FNA3D_ComputeBufferType type,
+	FNA3D_BufferUsage usage,
+	int32_t elementCount,
+	int32_t strideSize
+);
+
+FNA3DAPI void FNA3D_CreateNewEffect(
+	FNA3D_Device* device,
+	uint8_t* effectBinaryCode,
+	uint32_t effectCodeLength,
+	FNA3D_Effect_New** shader
+);
+
+FNA3DAPI void FNA3D_AddDisposeComputeBuffer(
+	FNA3D_Device* device,
+	FNA3D_ComputeBuffer* buffer
+);
+
 
 /* Effects */
 

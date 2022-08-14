@@ -37,10 +37,16 @@
 #endif
 
 /* Logging */
-
+#ifdef __cplusplus
+extern "C"
+{
+#endif
 extern void FNA3D_LogInfo(const char *fmt, ...);
 extern void FNA3D_LogWarn(const char *fmt, ...);
 extern void FNA3D_LogError(const char *fmt, ...);
+#ifdef __cplusplus
+}
+#endif
 
 /* Internal Helper Utilities */
 
@@ -279,6 +285,7 @@ static inline int32_t BytesPerImage(
 
 #define MAX_VERTEX_ATTRIBUTES		16
 #define MAX_BOUND_VERTEX_BUFFERS	16
+#define MAX_BOUND_COMPUTE_BUFFERS	16
 
 #define MAX_RENDERTARGET_BINDINGS	4
 
@@ -340,6 +347,14 @@ struct FNA3D_Device
 		int32_t vertexStart,
 		int32_t primitiveCount
 	);
+
+	/* Dispatch */
+	void (*Dispatch)(
+		FNA3D_Renderer* driverData,
+		int32_t threadGroupCountX,
+		int32_t threadGroupCountY,
+		int32_t threadGroupCountZ
+		);
 
 	/* Mutable Render States */
 
@@ -449,7 +464,8 @@ struct FNA3D_Device
 		int32_t width,
 		int32_t height,
 		int32_t levelCount,
-		uint8_t isRenderTarget
+		uint8_t isRenderTarget,
+		uint8_t isRandomAccess
 	);
 	FNA3D_Texture* (*CreateTexture3D)(
 		FNA3D_Renderer *driverData,
@@ -457,7 +473,8 @@ struct FNA3D_Device
 		int32_t width,
 		int32_t height,
 		int32_t depth,
-		int32_t levelCount
+		int32_t levelCount,
+		uint8_t isRandomAccess
 	);
 	FNA3D_Texture* (*CreateTextureCube)(
 		FNA3D_Renderer *driverData,
@@ -637,6 +654,28 @@ struct FNA3D_Device
 		int32_t dataLength
 	);
 
+	/* Compute Buffers */
+	FNA3D_ComputeBuffer* (*GenComputeBuffer)(
+		FNA3D_Renderer* driverData,
+		uint8_t dynamic,
+		FNA3D_ComputeBufferType type,
+		FNA3D_BufferUsage usage,
+		int32_t elementCount,
+		int32_t strideSize
+		);
+
+	void (*CreateNewEffect)(
+		FNA3D_Renderer* driverData,
+		uint8_t* effectBinaryCode,
+		uint32_t effectCodeLength,
+		FNA3D_Effect_New** effect
+		);
+
+	void (*AddDisposeComputeBuffer)(
+		FNA3D_Renderer* driverData,
+		FNA3D_ComputeBuffer* buffer
+		);
+
 	/* Effects */
 
 	void (*CreateEffect)(
@@ -738,6 +777,7 @@ struct FNA3D_Device
 	ASSIGN_DRIVER_FUNC(DrawIndexedPrimitives, name) \
 	ASSIGN_DRIVER_FUNC(DrawInstancedPrimitives, name) \
 	ASSIGN_DRIVER_FUNC(DrawPrimitives, name) \
+	ASSIGN_DRIVER_FUNC(Dispatch, name) \
 	ASSIGN_DRIVER_FUNC(SetViewport, name) \
 	ASSIGN_DRIVER_FUNC(SetScissorRect, name) \
 	ASSIGN_DRIVER_FUNC(GetBlendFactor, name) \
@@ -782,6 +822,9 @@ struct FNA3D_Device
 	ASSIGN_DRIVER_FUNC(AddDisposeIndexBuffer, name) \
 	ASSIGN_DRIVER_FUNC(SetIndexBufferData, name) \
 	ASSIGN_DRIVER_FUNC(GetIndexBufferData, name) \
+	ASSIGN_DRIVER_FUNC(GenComputeBuffer, name) \
+	ASSIGN_DRIVER_FUNC(CreateNewEffect, name) \
+	ASSIGN_DRIVER_FUNC(AddDisposeComputeBuffer, name) \
 	ASSIGN_DRIVER_FUNC(CreateEffect, name) \
 	ASSIGN_DRIVER_FUNC(CloneEffect, name) \
 	ASSIGN_DRIVER_FUNC(AddDisposeEffect, name) \
@@ -818,10 +861,17 @@ typedef struct FNA3D_Driver
 	);
 } FNA3D_Driver;
 
+#ifdef __cplusplus
+extern "C" FNA3D_Driver VulkanDriver;
+extern "C" FNA3D_Driver D3D11Driver;
+extern "C" FNA3D_Driver OpenGLDriver;
+extern "C" FNA3D_Driver GNMXDriver;
+#else
 extern FNA3D_Driver VulkanDriver;
 extern FNA3D_Driver D3D11Driver;
 extern FNA3D_Driver OpenGLDriver;
 extern FNA3D_Driver GNMXDriver;
+#endif
 
 #endif /* FNA3D_DRIVER_H */
 

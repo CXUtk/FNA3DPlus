@@ -50,12 +50,19 @@ typedef struct PackedStateArray
 	int32_t capacity;
 } PackedStateArray;
 
-PackedState GetPackedBlendState(FNA3D_BlendState blendState);
-PackedState GetPackedDepthStencilState(FNA3D_DepthStencilState dsState);
-PackedState GetPackedRasterizerState(FNA3D_RasterizerState rastState, float bias);
-PackedState GetPackedSamplerState(FNA3D_SamplerState samplerState);
-void* PackedStateArray_Fetch(PackedStateArray arr, PackedState key);
-void PackedStateArray_Insert(PackedStateArray *arr, PackedState key, void* value);
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+	PackedState GetPackedBlendState(FNA3D_BlendState blendState);
+	PackedState GetPackedDepthStencilState(FNA3D_DepthStencilState dsState);
+	PackedState GetPackedRasterizerState(FNA3D_RasterizerState rastState, float bias);
+	PackedState GetPackedSamplerState(FNA3D_SamplerState samplerState);
+	void* PackedStateArray_Fetch(PackedStateArray arr, PackedState key);
+	void PackedStateArray_Insert(PackedStateArray* arr, PackedState key, void* value);
+#ifdef __cplusplus
+}
+#endif
 
 /* Vertex Buffer Bindings */
 
@@ -79,6 +86,11 @@ typedef struct VertexBufferBindingsArray
 	int32_t capacity;
 } PackedVertexBufferBindingsArray;
 
+
+#ifdef __cplusplus
+extern "C"
+{
+#endif
 void* PackedVertexBufferBindingsArray_Fetch(
 	PackedVertexBufferBindingsArray arr,
 	FNA3D_VertexBufferBinding *bindings,
@@ -94,6 +106,9 @@ void PackedVertexBufferBindingsArray_Insert(
 	void* vertexShader,
 	void* value
 );
+#ifdef __cplusplus
+}
+#endif
 
 /* Macros */
 

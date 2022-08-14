@@ -38,12 +38,12 @@
     <ClCompile Include="..\MojoShader\profiles\mojoshader_profile_hlsl.c">
       <Filter>mojoshader</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\FNA3D_Driver_D3D11.c" />
     <ClCompile Include="..\MojoShader\mojoshader_vulkan.c">
       <Filter>mojoshader</Filter>
     </ClCompile>
     <ClCompile Include="..\src\FNA3D_Driver_Vulkan.c" />
     <ClCompile Include="..\src\FNA3D_Tracing.c" />
+    <ClCompile Include="..\src\FNA3D_Driver_D3D11.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\FNA3D.h" />

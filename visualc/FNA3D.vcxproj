@@ -54,8 +54,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
-    <IncludePath>..\..\SDL2\include;..\MojoShader;..\include;$(DXSDK_DIR)\Include;..\Vulkan-Headers\include;$(IncludePath)</IncludePath>
-    <LibraryPath>..\..\SDL2\lib\$(PlatformShortName);$(LibraryPath)</LibraryPath>
+    <IncludePath>..\..\SDL2\include;..\MojoShader;..\include;$(DXSDK_DIR)\Include;..\Vulkan-Headers\include;..\FX11\Include;$(IncludePath)</IncludePath>
+    <LibraryPath>..\..\SDL2\lib\$(PlatformShortName);..\FX11\Lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)'=='Debug'">
     <ClCompile>
@@ -65,7 +65,7 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>SDL2.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;Effects11d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)'=='Release'">
@@ -79,7 +79,7 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>SDL2.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;Effects11d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -120,7 +120,7 @@
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
     <ClCompile Include="..\src\FNA3D.c" />
-    <ClCompile Include="..\src\FNA3D_Driver_D3D11.c" />
+    <ClCompile Include="..\src\FNA3D_Driver_D3D11.cpp" />
     <ClCompile Include="..\src\FNA3D_Driver_Vulkan.c" />
     <ClCompile Include="..\src\FNA3D_Image.c" />
     <ClCompile Include="..\src\FNA3D_Driver_OpenGL.c" />
