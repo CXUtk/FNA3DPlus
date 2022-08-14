@@ -3,43 +3,43 @@
   <ItemGroup>
     <ClCompile Include="..\src\FNA3D.c" />
     <ClCompile Include="..\src\FNA3D_Driver_OpenGL.c" />
-    <ClCompile Include="..\mojoshader-Plus\mojoshader.c">
+    <ClCompile Include="..\MojoShader\mojoshader.c">
       <Filter>mojoshader</Filter>
     </ClCompile>
-    <ClCompile Include="..\mojoshader-Plus\mojoshader_common.c">
+    <ClCompile Include="..\MojoShader\mojoshader_common.c">
       <Filter>mojoshader</Filter>
     </ClCompile>
-    <ClCompile Include="..\mojoshader-Plus\mojoshader_effects.c">
+    <ClCompile Include="..\MojoShader\mojoshader_effects.c">
       <Filter>mojoshader</Filter>
     </ClCompile>
-    <ClCompile Include="..\mojoshader-Plus\mojoshader_metal.c">
+    <ClCompile Include="..\MojoShader\mojoshader_metal.c">
       <Filter>mojoshader</Filter>
     </ClCompile>
-    <ClCompile Include="..\mojoshader-Plus\mojoshader_opengl.c">
+    <ClCompile Include="..\MojoShader\mojoshader_opengl.c">
       <Filter>mojoshader</Filter>
     </ClCompile>
-    <ClCompile Include="..\mojoshader-Plus\profiles\mojoshader_profile_common.c">
+    <ClCompile Include="..\MojoShader\profiles\mojoshader_profile_common.c">
       <Filter>mojoshader</Filter>
     </ClCompile>
-    <ClCompile Include="..\mojoshader-Plus\profiles\mojoshader_profile_glsl.c">
+    <ClCompile Include="..\MojoShader\profiles\mojoshader_profile_glsl.c">
       <Filter>mojoshader</Filter>
     </ClCompile>
-    <ClCompile Include="..\mojoshader-Plus\profiles\mojoshader_profile_metal.c">
+    <ClCompile Include="..\MojoShader\profiles\mojoshader_profile_metal.c">
       <Filter>mojoshader</Filter>
     </ClCompile>
-    <ClCompile Include="..\mojoshader-Plus\profiles\mojoshader_profile_spirv.c">
+    <ClCompile Include="..\MojoShader\profiles\mojoshader_profile_spirv.c">
       <Filter>mojoshader</Filter>
     </ClCompile>
     <ClCompile Include="..\src\FNA3D_Image.c" />
     <ClCompile Include="..\src\FNA3D_PipelineCache.c" />
-    <ClCompile Include="..\mojoshader-Plus\mojoshader_d3d11.c">
+    <ClCompile Include="..\MojoShader\mojoshader_d3d11.c">
       <Filter>mojoshader</Filter>
     </ClCompile>
-    <ClCompile Include="..\mojoshader-Plus\profiles\mojoshader_profile_hlsl.c">
+    <ClCompile Include="..\MojoShader\profiles\mojoshader_profile_hlsl.c">
       <Filter>mojoshader</Filter>
     </ClCompile>
     <ClCompile Include="..\src\FNA3D_Driver_D3D11.c" />
-    <ClCompile Include="..\mojoshader-Plus\mojoshader_vulkan.c">
+    <ClCompile Include="..\MojoShader\mojoshader_vulkan.c">
       <Filter>mojoshader</Filter>
     </ClCompile>
     <ClCompile Include="..\src\FNA3D_Driver_Vulkan.c" />

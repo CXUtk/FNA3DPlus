@@ -83,40 +83,40 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\mojoshader-Plus\mojoshader.c">
+    <ClCompile Include="..\MojoShader\mojoshader.c">
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
-    <ClCompile Include="..\mojoshader-Plus\mojoshader_common.c">
+    <ClCompile Include="..\MojoShader\mojoshader_common.c">
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
-    <ClCompile Include="..\mojoshader-Plus\mojoshader_d3d11.c">
+    <ClCompile Include="..\MojoShader\mojoshader_d3d11.c">
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
-    <ClCompile Include="..\mojoshader-Plus\mojoshader_effects.c">
+    <ClCompile Include="..\MojoShader\mojoshader_effects.c">
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
-    <ClCompile Include="..\mojoshader-Plus\mojoshader_metal.c">
+    <ClCompile Include="..\MojoShader\mojoshader_metal.c">
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
-    <ClCompile Include="..\mojoshader-Plus\mojoshader_opengl.c">
+    <ClCompile Include="..\MojoShader\mojoshader_opengl.c">
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
-    <ClCompile Include="..\mojoshader-Plus\mojoshader_vulkan.c">
+    <ClCompile Include="..\MojoShader\mojoshader_vulkan.c">
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
-    <ClCompile Include="..\mojoshader-Plus\profiles\mojoshader_profile_common.c">
+    <ClCompile Include="..\MojoShader\profiles\mojoshader_profile_common.c">
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
-    <ClCompile Include="..\mojoshader-Plus\profiles\mojoshader_profile_glsl.c">
+    <ClCompile Include="..\MojoShader\profiles\mojoshader_profile_glsl.c">
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
-    <ClCompile Include="..\mojoshader-Plus\profiles\mojoshader_profile_hlsl.c">
+    <ClCompile Include="..\MojoShader\profiles\mojoshader_profile_hlsl.c">
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
-    <ClCompile Include="..\mojoshader-Plus\profiles\mojoshader_profile_metal.c">
+    <ClCompile Include="..\MojoShader\profiles\mojoshader_profile_metal.c">
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
-    <ClCompile Include="..\mojoshader-Plus\profiles\mojoshader_profile_spirv.c">
+    <ClCompile Include="..\MojoShader\profiles\mojoshader_profile_spirv.c">
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
     <ClCompile Include="..\src\FNA3D.c" />
