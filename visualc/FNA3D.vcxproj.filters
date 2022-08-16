@@ -2,7 +2,7 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="..\src\FNA3D.c" />
-    <ClCompile Include="..\src\FNA3D_Driver_OpenGL.c" />
+    <ClCompile Include="..\src\FNA3D_Driver_OpenGL.cpp" />
     <ClCompile Include="..\MojoShader\mojoshader.c">
       <Filter>mojoshader</Filter>
     </ClCompile>

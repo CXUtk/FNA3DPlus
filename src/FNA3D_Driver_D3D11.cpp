@@ -6289,13 +6289,7 @@ FNA3D_Driver D3D11Driver = {
 	D3D11_CreateDevice
 };
 
-#else
 
-extern int this_tu_is_empty;
-
-#endif /* FNA3D_DRIVER_D3D11 */
-
-/* vim: set noexpandtab shiftwidth=8 tabstop=8: */
 
 
 FX11API ID3DX11EffectVariable* FX11_Effect_GetVariableByName(FNA3D_Effect_New* effect, const char* name)
@@ -6690,3 +6684,10 @@ FX11API void FX11_Effect_ReleaseReflectionData(EffectReflectionData* data)
 	SDL_free(data->VariableTypes);
 	SDL_free(data->PVarialbes);
 }
+#else
+
+extern int this_tu_is_empty;
+
+#endif /* FNA3D_DRIVER_D3D11 */
+
+/* vim: set noexpandtab shiftwidth=8 tabstop=8: */

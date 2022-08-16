@@ -1713,7 +1713,13 @@ static void OPENGL_Dispatch(
 	int32_t threadGroupCountZ
 ) {
 	OpenGLRenderer* renderer = (OpenGLRenderer*)driverData;
-	// TODO: Add OpenGL and new effect framework logic
+	
+	renderer->glDispatchCompute(
+		threadGroupCountX, 
+		threadGroupCountY, 
+		threadGroupCountZ
+	);
+	renderer->glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 }
 
 
@@ -2509,7 +2515,7 @@ static void OPENGL_ApplyVertexBufferBindings(
 				}
 				attrUse[usage][index] = 1;
 				attribLoc = MOJOSHADER_glGetVertexAttribLocation(
-					VertexAttribUsage(usage),
+					VertexAttribUsage((FNA3D_VertexElementUsage)usage),
 					index
 				);
 				if (attribLoc == -1)
@@ -3304,7 +3310,7 @@ static void OPENGL_INTERNAL_SetPresentationInterval(
 	{
 		enableLateSwapTear = (
 			!isEGL &&
-			SDL_GetHintBoolean("FNA3D_ENABLE_LATESWAPTEAR", 0)
+			SDL_GetHintBoolean("FNA3D_ENABLE_LATESWAPTEAR", (SDL_bool)0)
 		);
 		if (!enableLateSwapTear)
 		{
@@ -3586,7 +3592,8 @@ static FNA3D_Texture* OPENGL_CreateTexture2D(
 	int32_t width,
 	int32_t height,
 	int32_t levelCount,
-	uint8_t isRenderTarget
+	uint8_t isRenderTarget,
+	uint8_t isRandomAccess
 ) {
 	OpenGLRenderer *renderer = (OpenGLRenderer*) driverData;
 	OpenGLTexture *result;
@@ -3664,7 +3671,8 @@ static FNA3D_Texture* OPENGL_CreateTexture3D(
 	int32_t width,
 	int32_t height,
 	int32_t depth,
-	int32_t levelCount
+	int32_t levelCount,
+	uint8_t isRandomAccess
 ) {
 	OpenGLRenderer *renderer = (OpenGLRenderer*) driverData;
 	OpenGLTexture *result;
@@ -5748,9 +5756,9 @@ static uint8_t OPENGL_PrepareWindowAttributes(uint32_t *flags)
 	const char *depthFormatHint;
 
 	/* GLContext environment variables */
-	forceES3 = SDL_GetHintBoolean("FNA3D_OPENGL_FORCE_ES3", 0);
-	forceCore = SDL_GetHintBoolean("FNA3D_OPENGL_FORCE_CORE_PROFILE", 0);
-	forceCompat = SDL_GetHintBoolean("FNA3D_OPENGL_FORCE_COMPATIBILITY_PROFILE", 0);
+	forceES3 = SDL_GetHintBoolean("FNA3D_OPENGL_FORCE_ES3", (SDL_bool)0);
+	forceCore = SDL_GetHintBoolean("FNA3D_OPENGL_FORCE_CORE_PROFILE", (SDL_bool)0);
+	forceCompat = SDL_GetHintBoolean("FNA3D_OPENGL_FORCE_COMPATIBILITY_PROFILE", (SDL_bool)0);
 
 	/* Some platforms are GLES only */
 	osVersion = SDL_GetPlatform();
@@ -6039,7 +6047,7 @@ FNA3D_Device* OPENGL_CreateDevice(
 
 	/* Some users might want pixely upscaling... */
 	renderer->backbufferScaleMode = SDL_GetHintBoolean(
-		"FNA3D_BACKBUFFER_SCALE_NEAREST", 0
+		"FNA3D_BACKBUFFER_SCALE_NEAREST", (SDL_bool)0
 	) ? GL_NEAREST : GL_LINEAR;
 
 	/* Load the extension list, initialize extension-dependent components */
