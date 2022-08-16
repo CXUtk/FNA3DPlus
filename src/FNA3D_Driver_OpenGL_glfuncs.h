@@ -158,6 +158,13 @@ GL_PROC(ARB_instanced_arrays, void, glVertexAttribDivisor, (GLuint a, GLuint b))
 GL_PROC(ARB_compute_shader_project, void, glDispatchCompute, (GLuint num_groups_x, GLuint num_groups_y, GLuint num_groups_z))
 GL_PROC(ARB_compute_shader_project, void, glDispatchComputeIndirect, (GLintptr indirect))
 GL_PROC(ARB_compute_shader_project, void, glMemoryBarrier, (GLbitfield barriers))
+GL_PROC(ARB_compute_shader_project, void, glBindImageTexture, (GLuint unit,
+    GLuint texture,
+    GLint level,
+    GLboolean layered,
+    GLint layer,
+    GLenum access,
+    GLenum format))
 /* Indexed color mask is a weird thing.
  * IndexedEXT was introduced in EXT_draw_buffers2, then
  * it was introduced in GL 3.0 as "ColorMaski" with no

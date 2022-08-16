@@ -30,6 +30,7 @@
 #include "FNA3D_Driver_OpenGL.h"
 
 #include <SDL.h>
+#include <GL/glext.h>
 
 /* We only use this to detect UIKit, for backbuffer creation */
 #ifdef SDL_VIDEO_DRIVER_UIKIT
@@ -45,6 +46,13 @@ typedef struct OpenGLRenderbuffer OpenGLRenderbuffer;
 typedef struct OpenGLBuffer OpenGLBuffer;
 typedef struct OpenGLEffect OpenGLEffect;
 typedef struct OpenGLQuery OpenGLQuery;
+
+#define CHECK_SUPPORT(feature, name) \
+if (!renderer->##feature) \
+{\
+	FNA3D_LogError(#name" is not supported in current OpenGL version");\
+	return;\
+}\
 
 struct OpenGLTexture /* Cast from FNA3D_Texture* */
 {
@@ -160,6 +168,7 @@ typedef struct OpenGLRenderer /* Cast from FNA3D_Renderer* */
 	SDL_GLContext context;
 	uint8_t useES3;
 	uint8_t useCoreProfile;
+	uint8_t useAdvanced430Feature;
 
 	/* FIXME: https://github.com/KhronosGroup/EGL-Registry/pull/113 */
 	uint8_t isEGL;
@@ -1712,7 +1721,9 @@ static void OPENGL_Dispatch(
 	int32_t threadGroupCountY,
 	int32_t threadGroupCountZ
 ) {
+
 	OpenGLRenderer* renderer = (OpenGLRenderer*)driverData;
+	CHECK_SUPPORT(useAdvanced430Feature, OPENGL_Dispatch)
 	
 	renderer->glDispatchCompute(
 		threadGroupCountX, 
@@ -3641,6 +3652,10 @@ static FNA3D_Texture* OPENGL_CreateTexture2D(
 				((levelWidth + 3) / 4) * ((levelHeight + 3) / 4) * Texture_GetFormatSize(format),
 				NULL
 			);
+			if (isRandomAccess)
+			{
+				renderer->glBindImageTexture(0, result->handle, i, GL_FALSE, 0, GL_WRITE_ONLY, glInternalFormat);
+			}
 		}
 	}
 	else
@@ -3659,6 +3674,19 @@ static FNA3D_Texture* OPENGL_CreateTexture2D(
 				glType,
 				NULL
 			);
+			if (isRandomAccess)
+			{
+				renderer->glBindImageTexture(0, result->handle, i, GL_FALSE, 0, GL_WRITE_ONLY, glInternalFormat);
+			}
+		}
+	}
+
+	if (isRandomAccess) 
+	{
+		if (!renderer->useAdvanced430Feature) 
+		{
+			FNA3D_LogError("isRandomAccess is not supported in current OpenGL version"); 
+			return nullptr; 
 		}
 	}
 
@@ -3718,6 +3746,20 @@ static FNA3D_Texture* OPENGL_CreateTexture3D(
 			glType,
 			NULL
 		);
+
+		if (isRandomAccess)
+		{
+			renderer->glBindImageTexture(0, result->handle, i, GL_FALSE, 0, GL_READ_WRITE, glInternalFormat);
+		}
+	}
+
+	if (isRandomAccess)
+	{
+		if (!renderer->useAdvanced430Feature)
+		{
+			FNA3D_LogError("isRandomAccess is not supported in current OpenGL version");
+			return nullptr;
+		}
 	}
 	return (FNA3D_Texture*) result;
 }
@@ -5904,7 +5946,13 @@ FNA3D_Device* OPENGL_CreateDevice(
 		);
 	}
 
+	//Use OpenGL 4.3 core
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+
 	/* Create OpenGL context */
+
 	renderer->context = SDL_GL_CreateContext(
 		(SDL_Window*) presentationParameters->deviceWindowHandle
 	);
@@ -5913,6 +5961,7 @@ FNA3D_Device* OPENGL_CreateDevice(
 	SDL_GL_GetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, &flags);
 	renderer->useES3 = (flags & SDL_GL_CONTEXT_PROFILE_ES) != 0;
 	renderer->useCoreProfile = (flags & SDL_GL_CONTEXT_PROFILE_CORE) != 0;
+
 
 	/* Check for EGL-based contexts */
 	renderer->isEGL = (	renderer->useES3 ||
@@ -6001,6 +6050,19 @@ FNA3D_Device* OPENGL_CreateDevice(
 	rendererStr =	(const char*) renderer->glGetString(GL_RENDERER);
 	versionStr =	(const char*) renderer->glGetString(GL_VERSION);
 	vendorStr =	(const char*) renderer->glGetString(GL_VENDOR);
+
+	bool versionGEQ430 = false;
+#ifndef GL_VERSION_3_0
+	GLint major, minor;
+	renderer->glGetIntegerv(GL_MAJOR_VERSION, &major);
+	renderer->glGetIntegerv(GL_MINOR_VERSION, &minor);
+	if (major >= 4 && minor >= 3) 
+	{
+		versionGEQ430 = true;
+	}
+#else
+#endif
+	renderer->useAdvanced430Feature = (renderer->useCoreProfile && versionGEQ430);
 
 	FNA3D_LogInfo("FNA3D Driver: OpenGL");
 	FNA3D_LogInfo("OpenGL Renderer: %s", rendererStr);

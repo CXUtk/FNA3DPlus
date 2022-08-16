@@ -351,6 +351,234 @@ typedef unsigned char	GLboolean;
 #define GL_MAX_COMBINED_IMAGE_UNIFORMS    0x90CF
 #endif
 
+
+#ifndef GL_VERSION_3_0
+#define GL_COMPARE_REF_TO_TEXTURE         0x884E
+#define GL_CLIP_DISTANCE0                 0x3000
+#define GL_CLIP_DISTANCE1                 0x3001
+#define GL_CLIP_DISTANCE2                 0x3002
+#define GL_CLIP_DISTANCE3                 0x3003
+#define GL_CLIP_DISTANCE4                 0x3004
+#define GL_CLIP_DISTANCE5                 0x3005
+#define GL_CLIP_DISTANCE6                 0x3006
+#define GL_CLIP_DISTANCE7                 0x3007
+#define GL_MAX_CLIP_DISTANCES             0x0D32
+#define GL_MAJOR_VERSION                  0x821B
+#define GL_MINOR_VERSION                  0x821C
+#define GL_NUM_EXTENSIONS                 0x821D
+#define GL_CONTEXT_FLAGS                  0x821E
+#define GL_COMPRESSED_RED                 0x8225
+#define GL_COMPRESSED_RG                  0x8226
+#define GL_CONTEXT_FLAG_FORWARD_COMPATIBLE_BIT 0x0001
+#define GL_RGBA32F                        0x8814
+#define GL_RGB32F                         0x8815
+#define GL_RGBA16F                        0x881A
+#define GL_RGB16F                         0x881B
+#define GL_VERTEX_ATTRIB_ARRAY_INTEGER    0x88FD
+#define GL_MAX_ARRAY_TEXTURE_LAYERS       0x88FF
+#define GL_MIN_PROGRAM_TEXEL_OFFSET       0x8904
+#define GL_MAX_PROGRAM_TEXEL_OFFSET       0x8905
+#define GL_CLAMP_READ_COLOR               0x891C
+#define GL_FIXED_ONLY                     0x891D
+#define GL_MAX_VARYING_COMPONENTS         0x8B4B
+#define GL_TEXTURE_1D_ARRAY               0x8C18
+#define GL_PROXY_TEXTURE_1D_ARRAY         0x8C19
+#define GL_TEXTURE_2D_ARRAY               0x8C1A
+#define GL_PROXY_TEXTURE_2D_ARRAY         0x8C1B
+#define GL_TEXTURE_BINDING_1D_ARRAY       0x8C1C
+#define GL_TEXTURE_BINDING_2D_ARRAY       0x8C1D
+#define GL_R11F_G11F_B10F                 0x8C3A
+#define GL_UNSIGNED_INT_10F_11F_11F_REV   0x8C3B
+#define GL_RGB9_E5                        0x8C3D
+#define GL_UNSIGNED_INT_5_9_9_9_REV       0x8C3E
+#define GL_TEXTURE_SHARED_SIZE            0x8C3F
+#define GL_TRANSFORM_FEEDBACK_VARYING_MAX_LENGTH 0x8C76
+#define GL_TRANSFORM_FEEDBACK_BUFFER_MODE 0x8C7F
+#define GL_MAX_TRANSFORM_FEEDBACK_SEPARATE_COMPONENTS 0x8C80
+#define GL_TRANSFORM_FEEDBACK_VARYINGS    0x8C83
+#define GL_TRANSFORM_FEEDBACK_BUFFER_START 0x8C84
+#define GL_TRANSFORM_FEEDBACK_BUFFER_SIZE 0x8C85
+#define GL_PRIMITIVES_GENERATED           0x8C87
+#define GL_TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN 0x8C88
+#define GL_RASTERIZER_DISCARD             0x8C89
+#define GL_MAX_TRANSFORM_FEEDBACK_INTERLEAVED_COMPONENTS 0x8C8A
+#define GL_MAX_TRANSFORM_FEEDBACK_SEPARATE_ATTRIBS 0x8C8B
+#define GL_INTERLEAVED_ATTRIBS            0x8C8C
+#define GL_SEPARATE_ATTRIBS               0x8C8D
+#define GL_TRANSFORM_FEEDBACK_BUFFER      0x8C8E
+#define GL_TRANSFORM_FEEDBACK_BUFFER_BINDING 0x8C8F
+#define GL_RGBA32UI                       0x8D70
+#define GL_RGB32UI                        0x8D71
+#define GL_RGBA16UI                       0x8D76
+#define GL_RGB16UI                        0x8D77
+#define GL_RGBA8UI                        0x8D7C
+#define GL_RGB8UI                         0x8D7D
+#define GL_RGBA32I                        0x8D82
+#define GL_RGB32I                         0x8D83
+#define GL_RGBA16I                        0x8D88
+#define GL_RGB16I                         0x8D89
+#define GL_RGBA8I                         0x8D8E
+#define GL_RGB8I                          0x8D8F
+#define GL_RED_INTEGER                    0x8D94
+#define GL_GREEN_INTEGER                  0x8D95
+#define GL_BLUE_INTEGER                   0x8D96
+#define GL_RGB_INTEGER                    0x8D98
+#define GL_RGBA_INTEGER                   0x8D99
+#define GL_BGR_INTEGER                    0x8D9A
+#define GL_BGRA_INTEGER                   0x8D9B
+#define GL_SAMPLER_1D_ARRAY               0x8DC0
+#define GL_SAMPLER_2D_ARRAY               0x8DC1
+#define GL_SAMPLER_1D_ARRAY_SHADOW        0x8DC3
+#define GL_SAMPLER_2D_ARRAY_SHADOW        0x8DC4
+#define GL_SAMPLER_CUBE_SHADOW            0x8DC5
+#define GL_UNSIGNED_INT_VEC2              0x8DC6
+#define GL_UNSIGNED_INT_VEC3              0x8DC7
+#define GL_UNSIGNED_INT_VEC4              0x8DC8
+#define GL_INT_SAMPLER_1D                 0x8DC9
+#define GL_INT_SAMPLER_2D                 0x8DCA
+#define GL_INT_SAMPLER_3D                 0x8DCB
+#define GL_INT_SAMPLER_CUBE               0x8DCC
+#define GL_INT_SAMPLER_1D_ARRAY           0x8DCE
+#define GL_INT_SAMPLER_2D_ARRAY           0x8DCF
+#define GL_UNSIGNED_INT_SAMPLER_1D        0x8DD1
+#define GL_UNSIGNED_INT_SAMPLER_2D        0x8DD2
+#define GL_UNSIGNED_INT_SAMPLER_3D        0x8DD3
+#define GL_UNSIGNED_INT_SAMPLER_CUBE      0x8DD4
+#define GL_UNSIGNED_INT_SAMPLER_1D_ARRAY  0x8DD6
+#define GL_UNSIGNED_INT_SAMPLER_2D_ARRAY  0x8DD7
+#define GL_QUERY_WAIT                     0x8E13
+#define GL_QUERY_NO_WAIT                  0x8E14
+#define GL_QUERY_BY_REGION_WAIT           0x8E15
+#define GL_QUERY_BY_REGION_NO_WAIT        0x8E16
+#define GL_BUFFER_ACCESS_FLAGS            0x911F
+#define GL_BUFFER_MAP_LENGTH              0x9120
+#define GL_BUFFER_MAP_OFFSET              0x9121
+/* Reuse tokens from ARB_depth_buffer_float */
+/* reuse GL_DEPTH_COMPONENT32F */
+/* reuse GL_DEPTH32F_STENCIL8 */
+/* reuse GL_FLOAT_32_UNSIGNED_INT_24_8_REV */
+/* Reuse tokens from ARB_framebuffer_object */
+/* reuse GL_INVALID_FRAMEBUFFER_OPERATION */
+/* reuse GL_FRAMEBUFFER_ATTACHMENT_COLOR_ENCODING */
+/* reuse GL_FRAMEBUFFER_ATTACHMENT_COMPONENT_TYPE */
+/* reuse GL_FRAMEBUFFER_ATTACHMENT_RED_SIZE */
+/* reuse GL_FRAMEBUFFER_ATTACHMENT_GREEN_SIZE */
+/* reuse GL_FRAMEBUFFER_ATTACHMENT_BLUE_SIZE */
+/* reuse GL_FRAMEBUFFER_ATTACHMENT_ALPHA_SIZE */
+/* reuse GL_FRAMEBUFFER_ATTACHMENT_DEPTH_SIZE */
+/* reuse GL_FRAMEBUFFER_ATTACHMENT_STENCIL_SIZE */
+/* reuse GL_FRAMEBUFFER_DEFAULT */
+/* reuse GL_FRAMEBUFFER_UNDEFINED */
+/* reuse GL_DEPTH_STENCIL_ATTACHMENT */
+/* reuse GL_INDEX */
+/* reuse GL_MAX_RENDERBUFFER_SIZE */
+/* reuse GL_DEPTH_STENCIL */
+/* reuse GL_UNSIGNED_INT_24_8 */
+/* reuse GL_DEPTH24_STENCIL8 */
+/* reuse GL_TEXTURE_STENCIL_SIZE */
+/* reuse GL_TEXTURE_RED_TYPE */
+/* reuse GL_TEXTURE_GREEN_TYPE */
+/* reuse GL_TEXTURE_BLUE_TYPE */
+/* reuse GL_TEXTURE_ALPHA_TYPE */
+/* reuse GL_TEXTURE_DEPTH_TYPE */
+/* reuse GL_UNSIGNED_NORMALIZED */
+/* reuse GL_FRAMEBUFFER_BINDING */
+/* reuse GL_DRAW_FRAMEBUFFER_BINDING */
+/* reuse GL_RENDERBUFFER_BINDING */
+/* reuse GL_READ_FRAMEBUFFER */
+/* reuse GL_DRAW_FRAMEBUFFER */
+/* reuse GL_READ_FRAMEBUFFER_BINDING */
+/* reuse GL_RENDERBUFFER_SAMPLES */
+/* reuse GL_FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE */
+/* reuse GL_FRAMEBUFFER_ATTACHMENT_OBJECT_NAME */
+/* reuse GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_LEVEL */
+/* reuse GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_CUBE_MAP_FACE */
+/* reuse GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_LAYER */
+/* reuse GL_FRAMEBUFFER_COMPLETE */
+/* reuse GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT */
+/* reuse GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT */
+/* reuse GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER */
+/* reuse GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER */
+/* reuse GL_FRAMEBUFFER_UNSUPPORTED */
+/* reuse GL_MAX_COLOR_ATTACHMENTS */
+/* reuse GL_COLOR_ATTACHMENT0 */
+/* reuse GL_COLOR_ATTACHMENT1 */
+/* reuse GL_COLOR_ATTACHMENT2 */
+/* reuse GL_COLOR_ATTACHMENT3 */
+/* reuse GL_COLOR_ATTACHMENT4 */
+/* reuse GL_COLOR_ATTACHMENT5 */
+/* reuse GL_COLOR_ATTACHMENT6 */
+/* reuse GL_COLOR_ATTACHMENT7 */
+/* reuse GL_COLOR_ATTACHMENT8 */
+/* reuse GL_COLOR_ATTACHMENT9 */
+/* reuse GL_COLOR_ATTACHMENT10 */
+/* reuse GL_COLOR_ATTACHMENT11 */
+/* reuse GL_COLOR_ATTACHMENT12 */
+/* reuse GL_COLOR_ATTACHMENT13 */
+/* reuse GL_COLOR_ATTACHMENT14 */
+/* reuse GL_COLOR_ATTACHMENT15 */
+/* reuse GL_DEPTH_ATTACHMENT */
+/* reuse GL_STENCIL_ATTACHMENT */
+/* reuse GL_FRAMEBUFFER */
+/* reuse GL_RENDERBUFFER */
+/* reuse GL_RENDERBUFFER_WIDTH */
+/* reuse GL_RENDERBUFFER_HEIGHT */
+/* reuse GL_RENDERBUFFER_INTERNAL_FORMAT */
+/* reuse GL_STENCIL_INDEX1 */
+/* reuse GL_STENCIL_INDEX4 */
+/* reuse GL_STENCIL_INDEX8 */
+/* reuse GL_STENCIL_INDEX16 */
+/* reuse GL_RENDERBUFFER_RED_SIZE */
+/* reuse GL_RENDERBUFFER_GREEN_SIZE */
+/* reuse GL_RENDERBUFFER_BLUE_SIZE */
+/* reuse GL_RENDERBUFFER_ALPHA_SIZE */
+/* reuse GL_RENDERBUFFER_DEPTH_SIZE */
+/* reuse GL_RENDERBUFFER_STENCIL_SIZE */
+/* reuse GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE */
+/* reuse GL_MAX_SAMPLES */
+/* Reuse tokens from ARB_framebuffer_sRGB */
+/* reuse GL_FRAMEBUFFER_SRGB */
+/* Reuse tokens from ARB_half_float_vertex */
+/* reuse GL_HALF_FLOAT */
+/* Reuse tokens from ARB_map_buffer_range */
+/* reuse GL_MAP_READ_BIT */
+/* reuse GL_MAP_WRITE_BIT */
+/* reuse GL_MAP_INVALIDATE_RANGE_BIT */
+/* reuse GL_MAP_INVALIDATE_BUFFER_BIT */
+/* reuse GL_MAP_FLUSH_EXPLICIT_BIT */
+/* reuse GL_MAP_UNSYNCHRONIZED_BIT */
+/* Reuse tokens from ARB_texture_compression_rgtc */
+/* reuse GL_COMPRESSED_RED_RGTC1 */
+/* reuse GL_COMPRESSED_SIGNED_RED_RGTC1 */
+/* reuse GL_COMPRESSED_RG_RGTC2 */
+/* reuse GL_COMPRESSED_SIGNED_RG_RGTC2 */
+/* Reuse tokens from ARB_texture_rg */
+/* reuse GL_RG */
+/* reuse GL_RG_INTEGER */
+/* reuse GL_R8 */
+/* reuse GL_R16 */
+/* reuse GL_RG8 */
+/* reuse GL_RG16 */
+/* reuse GL_R16F */
+/* reuse GL_R32F */
+/* reuse GL_RG16F */
+/* reuse GL_RG32F */
+/* reuse GL_R8I */
+/* reuse GL_R8UI */
+/* reuse GL_R16I */
+/* reuse GL_R16UI */
+/* reuse GL_R32I */
+/* reuse GL_R32UI */
+/* reuse GL_RG8I */
+/* reuse GL_RG8UI */
+/* reuse GL_RG16I */
+/* reuse GL_RG16UI */
+/* reuse GL_RG32I */
+/* reuse GL_RG32UI */
+/* Reuse tokens from ARB_vertex_array_object */
+/* reuse GL_VERTEX_ARRAY_BINDING */
+#endif
+
 /* In case this needs to be exported in a certain way... */
 #ifdef _WIN32 /* Windows OpenGL uses stdcall */
 #define GLAPIENTRY __stdcall
