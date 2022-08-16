@@ -30,7 +30,7 @@
 #include "FNA3D_Driver_OpenGL.h"
 
 #include <SDL.h>
-#include <GL/glext.h>
+//#include <GL/glext.h>
 
 /* We only use this to detect UIKit, for backbuffer creation */
 #ifdef SDL_VIDEO_DRIVER_UIKIT
@@ -625,6 +625,7 @@ struct FNA3D_Command
 	#define FNA3D_COMMAND_GETTEXTUREDATACUBE 16
 	#define FNA3D_COMMAND_GENCOLORRENDERBUFFER 17
 	#define FNA3D_COMMAND_GENDEPTHRENDERBUFFER 18
+	#define FNA3D_COMMAND_GENCOMPUTEBUFFER 19
 	uint8_t type;
 	FNA3DNAMELESS union
 	{
@@ -658,6 +659,16 @@ struct FNA3D_Command
 			int32_t sizeInBytes;
 			FNA3D_Buffer *retval;
 		} genIndexBuffer;
+
+		struct
+		{
+			uint8_t dynamic;
+			FNA3D_ComputeBufferType type;
+			FNA3D_BufferUsage usage;
+			int32_t elementCount;
+			int32_t strideSize;
+			FNA3D_ComputeBuffer* retval;
+		} genComputeBuffer;
 
 		struct
 		{
@@ -3689,7 +3700,6 @@ static FNA3D_Texture* OPENGL_CreateTexture2D(
 			return nullptr; 
 		}
 	}
-
 	return (FNA3D_Texture*) result;
 }
 
@@ -4603,9 +4613,42 @@ static FNA3D_ComputeBuffer* OPENGL_GenComputeBuffer(
 	int32_t elementCount,
 	int32_t strideSize
 ) {
-	OpenGLRenderer* renderer = (OpenGLRenderer*)driverData;
-	// TODO: Add OpenGL and new effect framework logic
-	return NULL;
+	return nullptr;
+	//OpenGLRenderer* renderer = (OpenGLRenderer*)driverData;
+	//CHECK_SUPPORT(useAdvanced430Feature, OPENGL_GenComputeBuffer)
+
+	//OpenGLBuffer* result = NULL;
+	//GLuint handle;
+	//FNA3D_Command cmd;
+	//if (renderer->threadID != SDL_ThreadID())
+	//{
+	//	cmd.type = FNA3D_COMMAND_GENCOMPUTEBUFFER;
+	//	cmd.genComputeBuffer.dynamic = dynamic;
+	//	cmd.genComputeBuffer.usage = usage;
+	//	cmd.genComputeBuffer.type = type;
+	//	cmd.genComputeBuffer.elementCount = elementCount;
+	//	cmd.genComputeBuffer.strideSize = strideSize;
+	//	ForceToMainThread(renderer, &cmd);
+	//	return cmd.genComputeBuffer.retval;
+	//}
+
+	//renderer->glGenBuffers(1, &handle);
+
+	//result = (OpenGLBuffer*)SDL_malloc(sizeof(OpenGLBuffer));
+	//result->handle = handle;
+	//result->size = (intptr_t)sizeInBytes;
+	//result->dynamic = (dynamic ? GL_STREAM_DRAW : GL_STATIC_DRAW);
+	//result->next = NULL;
+
+	//BindVertexBuffer(renderer, handle);
+	//renderer->glBufferData(
+	//	GL_ARRAY_BUFFER,
+	//	result->size,
+	//	NULL,
+	//	result->dynamic
+	//);
+
+	//return (FNA3D_ComputeBuffer*)result;
 }
 
 static void OPENGL_AddDisposeComputeBuffer(
@@ -6047,22 +6090,9 @@ FNA3D_Device* OPENGL_CreateDevice(
 		FNA3D_LogError("GRAPHICS DRIVER IS EXTREMELY BROKEN!");
 		SDL_assert(0 && "GRAPHICS DRIVER IS EXTREMELY BROKEN!");
 	}
-	rendererStr =	(const char*) renderer->glGetString(GL_RENDERER);
-	versionStr =	(const char*) renderer->glGetString(GL_VERSION);
+	rendererStr = (const char*) renderer->glGetString(GL_RENDERER);
+	versionStr = (const char*) renderer->glGetString(GL_VERSION);
 	vendorStr =	(const char*) renderer->glGetString(GL_VENDOR);
-
-	bool versionGEQ430 = false;
-#ifndef GL_VERSION_3_0
-	GLint major, minor;
-	renderer->glGetIntegerv(GL_MAJOR_VERSION, &major);
-	renderer->glGetIntegerv(GL_MINOR_VERSION, &minor);
-	if (major >= 4 && minor >= 3) 
-	{
-		versionGEQ430 = true;
-	}
-#else
-#endif
-	renderer->useAdvanced430Feature = (renderer->useCoreProfile && versionGEQ430);
 
 	FNA3D_LogInfo("FNA3D Driver: OpenGL");
 	FNA3D_LogInfo("OpenGL Renderer: %s", rendererStr);
@@ -6076,6 +6106,24 @@ FNA3D_Device* OPENGL_CreateDevice(
 		rendererStr, versionStr, vendorStr
 	);
 	LoadEntryPoints(renderer, driverInfo, debugMode);
+
+	// Check advanced support
+	bool versionGEQ430 = false;
+
+	if (renderer->useCoreProfile)
+	{
+#ifndef GL_VERSION_3_0
+		GLint major, minor;
+		renderer->glGetIntegerv(GL_MAJOR_VERSION, &major);
+		renderer->glGetIntegerv(GL_MINOR_VERSION, &minor);
+		if (major >= 4 && minor >= 3)
+		{
+			versionGEQ430 = true;
+		}
+		FNA3D_LogInfo("Version: %d.%d", major, minor);
+#endif
+	}
+	renderer->useAdvanced430Feature = (renderer->useCoreProfile && versionGEQ430);
 
 	/* Initialize shader context */
 	renderer->shaderProfile = SDL_GetHint("FNA3D_MOJOSHADER_PROFILE");
