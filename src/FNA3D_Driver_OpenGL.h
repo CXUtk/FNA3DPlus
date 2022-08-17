@@ -610,6 +610,11 @@ typedef unsigned char	GLboolean;
 #define GL_SAMPLES_PASSED                 0x8914
 #endif
 
+#define GL_SHADER_STORAGE_BUFFER 0x90D2
+#define GL_SHADER_STORAGE_BUFFER_BINDING 0x90D3
+#define GL_SHADER_STORAGE_BUFFER_START 0x90D4
+#define GL_SHADER_STORAGE_BUFFER_SIZE 0x90D5
+
 /* In case this needs to be exported in a certain way... */
 #ifdef _WIN32 /* Windows OpenGL uses stdcall */
 #define GLAPIENTRY __stdcall

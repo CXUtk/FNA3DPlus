@@ -1,4 +1,4 @@
-/* FNA3D - 3D Graphics Library for FNA
+﻿/* FNA3D - 3D Graphics Library for FNA
  *
  * Copyright (c) 2020-2022 Ethan Lee
  *
@@ -30,7 +30,6 @@
 #include "FNA3D_Driver_OpenGL.h"
 
 #include <SDL.h>
-//#include <GL/glext.h>
 
 /* We only use this to detect UIKit, for backbuffer creation */
 #ifdef SDL_VIDEO_DRIVER_UIKIT
@@ -47,11 +46,11 @@ typedef struct OpenGLBuffer OpenGLBuffer;
 typedef struct OpenGLEffect OpenGLEffect;
 typedef struct OpenGLQuery OpenGLQuery;
 
-#define CHECK_SUPPORT(feature, name) \
+#define CHECK_SUPPORT(feature, name, ret) \
 if (!renderer->##feature) \
 {\
 	FNA3D_LogError(#name" is not supported in current OpenGL version");\
-	return;\
+	return ret;\
 }\
 
 struct OpenGLTexture /* Cast from FNA3D_Texture* */
@@ -246,10 +245,12 @@ typedef struct OpenGLRenderer /* Cast from FNA3D_Renderer* */
 	int32_t numVertexTextureSlots;
 	int32_t vertexSamplerStart;
 	OpenGLTexture *textures[MAX_TEXTURE_SAMPLERS + MAX_VERTEXTEXTURE_SAMPLERS];
+	OpenGLBuffer* UAVSlots[MAX_TEXTURE_SAMPLERS + MAX_VERTEXTEXTURE_SAMPLERS];
 
 	/* Buffer Binding Cache */
 	GLuint currentVertexBuffer;
 	GLuint currentIndexBuffer;
+	GLuint currentComputeBuffer;
 
 	/* ld, or LastDrawn, vertex attributes */
 	int32_t ldBaseVertex;
@@ -307,6 +308,8 @@ typedef struct OpenGLRenderer /* Cast from FNA3D_Renderer* */
 	SDL_mutex *disposeVertexBuffersLock;
 	OpenGLBuffer *disposeIndexBuffers;
 	SDL_mutex *disposeIndexBuffersLock;
+	OpenGLBuffer* disposeComputeBuffers;
+	SDL_mutex* disposeComputeBuffersLock;
 	OpenGLEffect *disposeEffects;
 	SDL_mutex *disposeEffectsLock;
 	OpenGLQuery *disposeQueries;
@@ -1124,6 +1127,15 @@ static inline void BindVertexBuffer(OpenGLRenderer *renderer, GLuint handle)
 	{
 		renderer->glBindBuffer(GL_ARRAY_BUFFER, handle);
 		renderer->currentVertexBuffer = handle;
+	}
+}
+
+static inline void BindComputeBuffer(OpenGLRenderer* renderer, GLuint handle)
+{
+	if (handle != renderer->currentComputeBuffer)
+	{
+		renderer->glBindBuffer(GL_SHADER_STORAGE_BUFFER, handle);
+		renderer->currentComputeBuffer = handle;
 	}
 }
 
@@ -4613,49 +4625,41 @@ static FNA3D_ComputeBuffer* OPENGL_GenComputeBuffer(
 	int32_t elementCount,
 	int32_t strideSize
 ) {
-	return nullptr;
-	//OpenGLRenderer* renderer = (OpenGLRenderer*)driverData;
-	//CHECK_SUPPORT(useAdvanced430Feature, OPENGL_GenComputeBuffer)
+	OpenGLRenderer* renderer = (OpenGLRenderer*)driverData;
+	CHECK_SUPPORT(useAdvanced430Feature, OPENGL_GenComputeBuffer, nullptr)
 
-	//OpenGLBuffer* result = NULL;
-	//GLuint handle;
-	//FNA3D_Command cmd;
-	//if (renderer->threadID != SDL_ThreadID())
-	//{
-	//	cmd.type = FNA3D_COMMAND_GENCOMPUTEBUFFER;
-	//	cmd.genComputeBuffer.dynamic = dynamic;
-	//	cmd.genComputeBuffer.usage = usage;
-	//	cmd.genComputeBuffer.type = type;
-	//	cmd.genComputeBuffer.elementCount = elementCount;
-	//	cmd.genComputeBuffer.strideSize = strideSize;
-	//	ForceToMainThread(renderer, &cmd);
-	//	return cmd.genComputeBuffer.retval;
-	//}
+	OpenGLBuffer* result = NULL;
+	GLuint handle;
+	FNA3D_Command cmd;
+	if (renderer->threadID != SDL_ThreadID())
+	{
+		cmd.type = FNA3D_COMMAND_GENCOMPUTEBUFFER;
+		cmd.genComputeBuffer.dynamic = dynamic;
+		cmd.genComputeBuffer.usage = usage;
+		cmd.genComputeBuffer.type = type;
+		cmd.genComputeBuffer.elementCount = elementCount;
+		cmd.genComputeBuffer.strideSize = strideSize;
+		ForceToMainThread(renderer, &cmd);
+		return cmd.genComputeBuffer.retval;
+	}
 
-	//renderer->glGenBuffers(1, &handle);
+	renderer->glGenBuffers(1, &handle);
 
-	//result = (OpenGLBuffer*)SDL_malloc(sizeof(OpenGLBuffer));
-	//result->handle = handle;
-	//result->size = (intptr_t)sizeInBytes;
-	//result->dynamic = (dynamic ? GL_STREAM_DRAW : GL_STATIC_DRAW);
-	//result->next = NULL;
+	result = (OpenGLBuffer*)SDL_malloc(sizeof(OpenGLBuffer));
+	result->handle = handle;
+	result->size = (intptr_t)strideSize * elementCount;
+	result->dynamic = (dynamic ? GL_STREAM_DRAW : GL_STATIC_DRAW);
+	result->next = NULL;
 
-	//BindVertexBuffer(renderer, handle);
-	//renderer->glBufferData(
-	//	GL_ARRAY_BUFFER,
-	//	result->size,
-	//	NULL,
-	//	result->dynamic
-	//);
+	BindComputeBuffer(renderer, handle);
+	renderer->glBufferData(
+		GL_SHADER_STORAGE_BUFFER,
+		result->size,
+		NULL,
+		result->dynamic
+	);
 
-	//return (FNA3D_ComputeBuffer*)result;
-}
-
-static void OPENGL_AddDisposeComputeBuffer(
-	FNA3D_Renderer* driverData,
-	FNA3D_ComputeBuffer* buffer
-) {
-	// TODO: Add OpenGL and new effect framework logic
+	return (FNA3D_ComputeBuffer*)result;
 }
 
 static void OPENGL_INTERNAL_DestroyVertexBuffer(
@@ -4699,6 +4703,51 @@ static void OPENGL_AddDisposeVertexBuffer(
 		SDL_LockMutex(renderer->disposeVertexBuffersLock);
 		LinkedList_Add(renderer->disposeVertexBuffers, glBuffer, curr);
 		SDL_UnlockMutex(renderer->disposeVertexBuffersLock);
+	}
+}
+
+static void OPENGL_INTERNAL_DestroyComputeBuffer(
+	OpenGLRenderer* renderer,
+	OpenGLBuffer* buffer
+) {
+	int32_t i;
+
+	if (buffer->handle == renderer->currentComputeBuffer)
+	{
+		renderer->glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+		renderer->currentComputeBuffer = 0;
+	}
+	for (i = 0; i < renderer->numTextureSlots + renderer->numVertexTextureSlots; i += 1)
+	{
+		if (renderer->UAVSlots[i] == buffer)
+		{
+			/* Remove this texture from the sampler cache */
+			renderer->UAVSlots[i] = nullptr;
+		}
+	}
+	renderer->glDeleteBuffers(1, &buffer->handle);
+
+	SDL_free(buffer);
+}
+
+
+static void OPENGL_AddDisposeComputeBuffer(
+	FNA3D_Renderer* driverData,
+	FNA3D_ComputeBuffer* buffer
+) {
+	OpenGLRenderer* renderer = (OpenGLRenderer*)driverData;
+	OpenGLBuffer* glBuffer = (OpenGLBuffer*)buffer;
+	OpenGLBuffer* curr;
+
+	if (renderer->threadID == SDL_ThreadID())
+	{
+		OPENGL_INTERNAL_DestroyComputeBuffer(renderer, glBuffer);
+	}
+	else
+	{
+		SDL_LockMutex(renderer->disposeComputeBuffersLock);
+		LinkedList_Add(renderer->disposeComputeBuffers, glBuffer, curr);
+		SDL_UnlockMutex(renderer->disposeComputeBuffersLock);
 	}
 }
 
