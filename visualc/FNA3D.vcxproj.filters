@@ -55,10 +55,19 @@
     <ClInclude Include="..\src\FNA3D_Driver_D3D11.h" />
     <ClInclude Include="..\src\FNA3D_Driver_Vulkan_vkfuncs.h" />
     <ClInclude Include="..\src\FNA3D_Tracing.h" />
+    <ClInclude Include="..\AdvancedEffect\PipelineStateObject.h">
+      <Filter>AdvancedEffect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\AdvancedEffect\Interfaces.h">
+      <Filter>AdvancedEffect</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="mojoshader">
       <UniqueIdentifier>{622c740d-4374-4129-8a11-23bf8075b42c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AdvancedEffect">
+      <UniqueIdentifier>{e092e90c-9a2d-4325-bd2b-8dbae4e846fe}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
